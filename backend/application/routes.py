@@ -81,6 +81,6 @@ def get_copy(id):
 def patch_copys():
     item = request.json
     copy  = Copy.query.get(item['id'])
-    copy.status = item['status']
+    copy.stock = item['stock']
     db.session.commit()
     return jsonify({"message":"Succesfully inserted"}), 201

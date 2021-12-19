@@ -43,11 +43,11 @@ class Copy (db.Model):
     id = db.Column(db.String(200), primary_key=True)
     book_id = db.Column(db.String(200), db.ForeignKey("book.id"))
     loans = db.relationship("Loan", backref="copy")
-    status = db.Column(db.String(200))
+    stock= db.Column(db.String(200))
     def __init__(self,id,book_id):
         self.book_id = book_id
         self.id = id
-        self.status = 'Disponível'
+        self.stock = 'Disponível'
 
 class User (db.Model):
     __tablename__ = 'user'

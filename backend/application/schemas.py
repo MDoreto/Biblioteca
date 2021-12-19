@@ -11,11 +11,16 @@ class BookSchema(ma.SQLAlchemyAutoSchema):
         model = Book
     copys = ma.Nested("CopySchema", many=True, exclude=('book',))
 
+
 class CopySchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Copy
     book = ma.Nested("BookSchema", many=False, exclude=('copys',))
-
+    status = fields.Method("getStatus")
+    def getStatus(self,obj):
+        if any( not loan.date_effective for loan in obj.loans):
+            return "Emprestado"
+        return obj.stock
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User

@@ -17,7 +17,7 @@
               <v-row justify="center"
                 ><v-data-table
                   class="ma-7 elevation-3 pa-2"
-                  :headers="exemplarHeader"
+                  :headers="exemplarHeader.filter((o) => !o.hide)"
                   :items="item.copys"
                   disable-pagination
                   hide-default-footer
@@ -36,21 +36,18 @@
                       />
                     </v-toolbar> </template
                   ><template v-slot:[`item.actions`]="{ item }">
-                    <v-icon
-                      small
-                      class="mr-2"
-                      @click="editCopy(item)"
-                    >
+                    <v-icon small class="mr-2" @click="editCopy(item)">
                       mdi-pencil
                     </v-icon>
-                    <v-icon v-if="item.status=='Disponível'" small @click="loan(item)">
+                    <v-icon
+                      v-if="item.status == 'Disponível'"
+                      small
+                      @click="loan(item)"
+                    >
                       mdi-share
                     </v-icon> </template
                   ><template v-slot:[`item.status`]="{ item }">
-                    <v-chip
-                      :color="item.status === 'Disponível' ? 'green' : 'red'"
-                      dark
-                    >
+                    <v-chip :color="colorStatus[item.status]" dark>
                       {{ item.status }}
                     </v-chip>
                   </template></v-data-table
@@ -92,18 +89,20 @@
             title="Livro"
             endpoint="books"
           />
-          <Loan v-if="loanDialog" :dialog.sync="loanDialog" :item="editedItem" />
+          <Loan
+            v-if="loanDialog"
+            :dialog.sync="loanDialog"
+            :item="editedItem"
+          />
         </v-toolbar>
       </template>
       <template v-slot:[`item.status`]="{ item }">
-        <v-chip :color="item.status === 'Disponível' ? 'green' : 'red'" dark>
+        <v-chip :color="colorStatus[item.status]" dark>
           {{ item.status }}
         </v-chip>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editBook(item)">
-          mdi-pencil
-        </v-icon>
+        <v-icon small class="mr-2" @click="editBook(item)"> mdi-pencil </v-icon>
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize"> Reset </v-btn>
@@ -130,15 +129,18 @@ export default {
     editDialog: false,
     loanDialog: false,
     dialogDelete: false,
+    colorStatus: { Disponível: "green", Emprestado: "orange", Removido: "red" },
     expanded: [],
     exemplarHeader: [
       { text: "Número", value: "id", primary: true },
       {
-        text: "Status",
-        value: "status",
+        text: "Estoque",
+        value: "stock",
         type: ["Disponível", "Removido"],
         default: true,
+        hide: true,
       },
+      { text: "Status", value: "status", static: true },
       { text: "Actions", value: "actions", static: true },
     ],
     headers: [
@@ -154,8 +156,9 @@ export default {
       { text: "Editora", value: "publisher" },
       { text: "Edição", value: "edition" },
       { text: "Volume", value: "volume" },
+
       {
-        text: "Número do exemplar",
+        text: "ID",
         value: "id",
         primary: true,
         secondary: true,
@@ -167,7 +170,7 @@ export default {
       },
       { text: "Área específica", value: "specific_area", secondary: true },
       { text: "Localização", value: "location", secondary: true },
-
+      { text: "Status", value: "status" },
       { text: "Actions", value: "actions", sortable: false, static: true },
     ],
     items: [],
@@ -191,11 +194,16 @@ export default {
 
   methods: {
     initialize() {
-      axios
-        .get(process.env.VUE_APP_ROOT_API + "books")
-        .then((response) => (this.items = response.data));
+      axios.get(process.env.VUE_APP_ROOT_API + "books").then((response) => {
+        this.items = response.data;
+        this.items.forEach((item) => (item.status = this.getStatus(item)));
+      });
     },
-
+    getStatus(item) {
+      if (item.copys.some((o) => o.status == "Disponível")) return "Disponível";
+      if (item.copys.some((o) => o.status == "Emprestado")) return "Emprestado";
+      return "Removido";
+    },
     editBook(item) {
       this.editedIndex = 1;
       this.editedItem = Object.assign({}, item);
