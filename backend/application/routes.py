@@ -20,7 +20,6 @@ def post_books():
 @app.route("/books", methods =["PUT"])
 def put_books():
     edit = request.json
-    print (edit)
     book = Book.query.get(request.json['id'])
     main = BookSchema().dump(book)
     for prop in edit:

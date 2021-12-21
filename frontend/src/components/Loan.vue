@@ -111,7 +111,6 @@ export default {
   },
   computed: {
     user() {
-      console.log(this.search);
       if (this.search) return this.users.find((o) => o.cpf == this.search);
       return {};
     },
@@ -120,13 +119,13 @@ export default {
     close() {
       this.$emit("update:dialog", false);
     },
-    save() {
-      axios.post(process.env.VUE_APP_ROOT_API + "loans", {
+    async save() {
+     await axios.post(process.env.VUE_APP_ROOT_API + "loans", {
         user_cpf: this.user.cpf,
         copy_id: this.item.id,
         date_return: this.date,
       });
-
+      this.$emit("save");
       this.close();
     },
   },

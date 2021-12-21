@@ -1,7 +1,7 @@
 <template>
   <v-dialog @click:outside="close" :value="dialog" max-width="800px">
     <template v-slot:activator="{ on, attrs }">
-      <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+      <v-btn color="secondary" dark class="mb-2" v-bind="attrs" v-on="on">
         Novo {{ title }}
       </v-btn>
     </template>
@@ -70,18 +70,19 @@ export default {
   },
   methods: {
     close() {
-      this.editedItem = {};
       this.$emit("update:dialog", false);
       this.$emit("update:idx", -1);
     },
-    save() {
+    async save() {
       if (this.idx > -1) {
         delete this.item.copys;
         delete this.item.book_id;
-        axios.put(process.env.VUE_APP_ROOT_API + this.endpoint, this.item);
+        delete this.item.status;
+        await axios.put(process.env.VUE_APP_ROOT_API + this.endpoint, this.item);
       } else {
-        axios.post(process.env.VUE_APP_ROOT_API + this.endpoint, this.item);
+        await axios.post(process.env.VUE_APP_ROOT_API + this.endpoint, this.item);
       }
+      
       this.close();
     },
   },

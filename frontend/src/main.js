@@ -6,9 +6,9 @@ import vuetify from './plugins/vuetify'
 import { VueMaskDirective } from 'v-mask'
 
 Vue.directive('mask', VueMaskDirective);
+Vue.prototype.$colorStatus = { Disponível: "green", Emprestado: "orange", Removido: "red" },
 
-
-Vue.config.productionTip = false
+  Vue.config.productionTip = false
 
 new Vue({
   router,

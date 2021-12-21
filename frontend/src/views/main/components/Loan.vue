@@ -115,13 +115,14 @@ export default {
       this.dialogReturn = true;
     },
 
-    returnItemConfirm() {
-      axios.patch(process.env.VUE_APP_ROOT_API + "loans", this.editedItem);
+    async returnItemConfirm() {
+      await axios.patch(process.env.VUE_APP_ROOT_API + "loans", this.editedItem);
       this.close();
     },
 
     close() {
       this.dialogReturn = false;
+      this.initialize()
     },
   },
 };

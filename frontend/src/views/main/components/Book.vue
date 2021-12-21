@@ -12,48 +12,11 @@
       multi-sort
       ><template v-slot:expanded-item="{ item }">
         <td :colspan="headers.length">
-          <v-row
+          <v-row class="nowrap"
             ><v-col cols="6">
               <v-row justify="center"
-                ><v-data-table
-                  class="ma-7 elevation-3 pa-2"
-                  :headers="exemplarHeader.filter((o) => !o.hide)"
-                  :items="item.copys"
-                  disable-pagination
-                  hide-default-footer
-                  ><template v-slot:top>
-                    <v-toolbar flat>
-                      <v-toolbar-title>Exemplares</v-toolbar-title>
-                      <v-divider class="mx-4" inset vertical></v-divider
-                      ><v-spacer></v-spacer>
-                      <Edit
-                        :dialog.sync="copyDialog"
-                        :item="getCopy(editedItem, item)"
-                        :idx.sync="editedIndex"
-                        :headers="exemplarHeader"
-                        title="Exemplar"
-                        endpoint="copys"
-                      />
-                    </v-toolbar> </template
-                  ><template v-slot:[`item.actions`]="{ item }">
-                    <v-icon small class="mr-2" @click="editCopy(item)">
-                      mdi-pencil
-                    </v-icon>
-                    <v-icon
-                      v-if="item.status == 'Disponível'"
-                      small
-                      @click="loan(item)"
-                    >
-                      mdi-share
-                    </v-icon> </template
-                  ><template v-slot:[`item.status`]="{ item }">
-                    <v-chip :color="colorStatus[item.status]" dark>
-                      {{ item.status }}
-                    </v-chip>
-                  </template></v-data-table
-                ></v-row
-              ></v-col
-            >
+                ><Copy :book="item" @save="initialize" /></v-row
+            ></v-col>
             <v-col cols="6">
               <v-row justify="center" class="ma-5">
                 <v-col
@@ -82,27 +45,23 @@
             class="mx-12"
           ></v-text-field>
           <Edit
-            :dialog.sync="editDialog"
+            :dialog.sync="dialog"
             :item="editedItem"
             :idx.sync="editedIndex"
-            :headers="headers"
+            :headers="headers.filter((o) => !o.static)"
             title="Livro"
             endpoint="books"
-          />
-          <Loan
-            v-if="loanDialog"
-            :dialog.sync="loanDialog"
-            :item="editedItem"
+            @save="initialize"
           />
         </v-toolbar>
       </template>
       <template v-slot:[`item.status`]="{ item }">
-        <v-chip :color="colorStatus[item.status]" dark>
+        <v-chip :color="$colorStatus[item.status]" dark>
           {{ item.status }}
         </v-chip>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editBook(item)"> mdi-pencil </v-icon>
+        <v-icon small class="mr-2" @click="edit(item)"> mdi-pencil </v-icon>
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize"> Reset </v-btn>
@@ -117,32 +76,12 @@ import axios from "axios";
 export default {
   components: {
     Edit: () => import("@/components/Edit.vue"),
-    Loan: () => import("@/components/Loan.vue"),
-  },
-  watch: {
-    editedIndex(value) {
-      console.log(value);
-    },
+
+    Copy: () => import("@/components/Copy.vue"),
   },
   data: () => ({
-    copyDialog: false,
-    editDialog: false,
-    loanDialog: false,
-    dialogDelete: false,
-    colorStatus: { Disponível: "green", Emprestado: "orange", Removido: "red" },
+    dialog: false,
     expanded: [],
-    exemplarHeader: [
-      { text: "Número", value: "id", primary: true },
-      {
-        text: "Estoque",
-        value: "stock",
-        type: ["Disponível", "Removido"],
-        default: true,
-        hide: true,
-      },
-      { text: "Status", value: "status", static: true },
-      { text: "Actions", value: "actions", static: true },
-    ],
     headers: [
       {
         text: "Título",
@@ -170,28 +109,23 @@ export default {
       },
       { text: "Área específica", value: "specific_area", secondary: true },
       { text: "Localização", value: "location", secondary: true },
-      { text: "Status", value: "status" },
+      { text: "Status", value: "status", static: true },
       { text: "Actions", value: "actions", sortable: false, static: true },
     ],
     items: [],
     search: "",
     editedIndex: -1,
     editedItem: {},
-    defaultItem: {},
   }),
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-  },
 
   created() {
     this.initialize();
   },
-
+  watch: {
+    dialog(value) {
+      if (value == false) this.editedItem = {};
+    },
+  },
   methods: {
     initialize() {
       axios.get(process.env.VUE_APP_ROOT_API + "books").then((response) => {
@@ -204,39 +138,18 @@ export default {
       if (item.copys.some((o) => o.status == "Emprestado")) return "Emprestado";
       return "Removido";
     },
-    editBook(item) {
+    edit(item) {
       this.editedIndex = 1;
       this.editedItem = Object.assign({}, item);
-      this.editDialog = true;
-    },
-    editCopy(item) {
-      this.editedIndex = 1;
-      this.editedItem = Object.assign({}, item);
-      this.copyDialog = true;
+      this.dialog = true;
     },
 
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedItem = {};
         this.editedIndex = -1;
       });
-    },
-
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-    loan(item) {
-      this.editedItem = item;
-      this.loanDialog = true;
-    },
-    getCopy(i, item) {
-      i.book_id = item.id;
-      return i;
     },
   },
 };

@@ -6,19 +6,25 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Book',
-    component: () => import( '../views/Book.vue')
+    name: 'Index',
+    component: () => import('../views/main/index.vue'),
+    children: [{
+      path: '/Books',
+      name: 'Book',
+      component: () => import('../views/main/components/Book.vue')
+    },
+    {
+      path: '/Users',
+      name: 'User',
+      component: () => import('../views/main/components/User.vue')
+    },
+    {
+      path: '/Loans',
+      name: 'Loan',
+      component: () => import('../views/main/components/Loan.vue')
+    },]
   },
-  {
-    path: '/Users',
-    name: 'User',
-    component: () => import( '../views/User.vue')
-  },
-  {
-    path: '/Loans',
-    name: 'Loan',
-    component: () => import( '../views/Loan.vue')
-  },
+
 ]
 
 const router = new VueRouter({
