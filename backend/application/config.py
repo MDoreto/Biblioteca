@@ -1,6 +1,5 @@
 from os import environ 
-from pathlib import Path
-
+from datetime import timedelta
 class Config(object):
     DEBUG = False
 
@@ -16,7 +15,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}'
 
-    UPLOAD_FOLDER =  (Path(__file__).parent / 'uploaded_files').resolve()
-    ALLOWED_EXTENSIONS = {'pdf'}
-
-    
+    JWT_TOKEN_LOCATION= ["cookies"]
+    JWT_COOKIE_SECURE = True 
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    JWT_COOKIE_CSRF_PROTECT = True

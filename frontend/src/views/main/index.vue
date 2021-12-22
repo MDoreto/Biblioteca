@@ -49,7 +49,7 @@
       >
       <template v-slot:append>
         <div class="pa-1">
-          <v-btn block width="50%"
+          <v-btn block width="50%" @click="logout"
             ><v-icon> mdi-logout </v-icon> <span v-if="!mini">Logout</span>
           </v-btn>
         </div>
@@ -85,11 +85,17 @@
 }
 </style>
 <script>
+import { apiService } from "@/api";
 export default {
   name: "App",
 
   data: () => ({
     mini: true,
   }),
+  methods: {
+    logout() {
+      apiService().post("logout").then(() => this.$router.push({ name: "Login" }));;
+    },
+  },
 };
 </script>

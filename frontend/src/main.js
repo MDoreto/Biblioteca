@@ -9,7 +9,6 @@ Vue.directive('mask', VueMaskDirective);
 Vue.prototype.$colorStatus = { Disponível: "green", Emprestado: "orange", Removido: "red" },
 
   Vue.config.productionTip = false
-
 new Vue({
   router,
   vuetify,

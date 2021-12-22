@@ -96,7 +96,7 @@
   </v-dialog>
 </template>
 <script>
-import axios from "axios";
+import { apiService } from "@/api";
 export default {
   data: () => ({
     users: [],
@@ -120,7 +120,7 @@ export default {
       this.$emit("update:dialog", false);
     },
     async save() {
-     await axios.post(process.env.VUE_APP_ROOT_API + "loans", {
+     await apiService().post(process.env.VUE_APP_ROOT_API + "loans", {
         user_cpf: this.user.cpf,
         copy_id: this.item.id,
         date_return: this.date,
@@ -130,10 +130,10 @@ export default {
     },
   },
   created() {
-    axios
+    apiService()
       .get(process.env.VUE_APP_ROOT_API + "users")
       .then((response) => (this.users = response.data));
-    axios
+    apiService()
       .get(process.env.VUE_APP_ROOT_API + "copys/" + this.item.id)
       .then((response) => (this.book = response.data.book));
   },

@@ -35,7 +35,7 @@
   </v-card>
 </template>
 <script>
-import axios from "axios";
+import { apiService } from "@/api";
 export default {
   components: {
     Edit: () => import("@/components/Edit.vue"),
@@ -81,9 +81,7 @@ export default {
 
   methods: {
     initialize() {
-      axios
-        .get(process.env.VUE_APP_ROOT_API + "users")
-        .then((response) => (this.items = response.data));
+      apiService().get("users").then((response) => (this.items = response.data));
     },
 
     edit(item) {

@@ -47,7 +47,7 @@
   </v-dialog>
 </template>
 <script>
-import axios from "axios";
+import { apiService } from "@/api";
 export default {
   props: {
     item: { type: Object, required: true },
@@ -78,12 +78,12 @@ export default {
         delete this.item.copys;
         delete this.item.book_id;
         delete this.item.status;
-        await axios.put(process.env.VUE_APP_ROOT_API + this.endpoint, this.item);
+        await apiService().put(process.env.VUE_APP_ROOT_API + this.endpoint, this.item);
       } else {
-        await axios.post(process.env.VUE_APP_ROOT_API + this.endpoint, this.item);
+        await apiService().post(process.env.VUE_APP_ROOT_API + this.endpoint, this.item);
       }
-      
       this.close();
+      this.$emit("save")
     },
   },
 };

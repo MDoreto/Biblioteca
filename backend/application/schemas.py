@@ -30,4 +30,3 @@ class LoanSchema(ma.SQLAlchemyAutoSchema):
         model = Loan
     copy = ma.Nested("CopySchema", many=False)
     user = ma.Nested("UserSchema", many=False)
-    

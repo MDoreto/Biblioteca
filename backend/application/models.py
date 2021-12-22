@@ -2,10 +2,11 @@ from application import app
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime
-
+from flask_bcrypt import Bcrypt
 
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
+bcrypt = Bcrypt(app)
 
 class Book (db.Model):
     __tablename__ = 'book'
@@ -81,4 +82,18 @@ class Loan (db.Model):
     def return_book(self,obs):
         self.obs = obs
         self.date_effective = datetime.now()
+
+class Login (db.Model):
+    __tablename__ = 'login'
+    user = db.Column(db.String(50), primary_key=True)
+    password = db.Column(db.LargeBinary(60))
+    def __init__(self,user, password):
+        self.user = user
+        self.set_password(password)
+
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self.password, password)
+
+    def set_password(self,password):
+        self.password = bcrypt.generate_password_hash(password)
 

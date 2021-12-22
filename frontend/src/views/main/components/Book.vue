@@ -72,7 +72,7 @@
 <style>
 </style>
 <script>
-import axios from "axios";
+import { apiService } from "@/api";
 export default {
   components: {
     Edit: () => import("@/components/Edit.vue"),
@@ -128,7 +128,7 @@ export default {
   },
   methods: {
     initialize() {
-      axios.get(process.env.VUE_APP_ROOT_API + "books").then((response) => {
+      apiService().get("books").then((response) => {
         this.items = response.data;
         this.items.forEach((item) => (item.status = this.getStatus(item)));
       });
