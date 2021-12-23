@@ -53,7 +53,7 @@ export default {
         align: "center",
         value: "name",
       },
-      { text: "Telefone", value: "phone" },
+      { text: "Telefone", value: "phone", mask:'(##) #####-####' },
       { text: "Email", value: "email" },
       { text: "CPF", value: "cpf", primary: true },
       {

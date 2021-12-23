@@ -28,6 +28,26 @@
                 :label="h.text"
                 v-model="item[h.value]"
               ></v-select>
+
+              <v-text-field
+                v-else-if="h.value == 'phone'"
+                :label="h.text"
+                v-model="item[h.value]"
+                v-mask="'+## (##) #####-####'"
+              ></v-text-field>
+              <v-text-field
+                v-else-if="h.value == 'cpf'"
+                :label="h.text"
+                v-model="item[h.value]"
+                v-mask="'###.###.###-##'"
+              ></v-text-field
+              ><v-text-field
+                v-else-if="h.value == 'email'"
+                v-model="item[h.value]"
+                :rules="emailRules"
+                :label="h.text"
+                required
+              ></v-text-field>
               <v-text-field
                 v-else
                 :label="h.text"
@@ -63,6 +83,12 @@ export default {
       required: true,
     },
   },
+  data: () => ({
+    emailRules: [
+      (v) => !!v || "E-mail is required",
+      (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+    ],
+  }),
   computed: {
     formTitle() {
       return (this.idx < 0 ? "Novo " : "Editar ") + this.title;
@@ -78,12 +104,18 @@ export default {
         delete this.item.copys;
         delete this.item.book_id;
         delete this.item.status;
-        await apiService().put(process.env.VUE_APP_ROOT_API + this.endpoint, this.item);
+        await apiService().put(
+          process.env.VUE_APP_ROOT_API + this.endpoint,
+          this.item
+        );
       } else {
-        await apiService().post(process.env.VUE_APP_ROOT_API + this.endpoint, this.item);
+        await apiService().post(
+          process.env.VUE_APP_ROOT_API + this.endpoint,
+          this.item
+        );
       }
       this.close();
-      this.$emit("save")
+      this.$emit("save");
     },
   },
 };

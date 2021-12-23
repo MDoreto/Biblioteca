@@ -16,6 +16,6 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}'
 
     JWT_TOKEN_LOCATION= ["cookies"]
-    JWT_COOKIE_SECURE = True 
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=1)
     JWT_COOKIE_CSRF_PROTECT = True

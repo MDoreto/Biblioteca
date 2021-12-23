@@ -1,16 +1,25 @@
 import axios from 'axios';
-
+import router from './router';
 function apiService() {
-    return axios.create({
+    var a = axios.create({
         baseURL: process.env.VUE_APP_ROOT_API,
         withCredentials: true,
-        xsrfCookieName: 'csrf_access_token',
         credentials: "same-origin",
         headers: {
-            "Content-Type": "application/json",
             "X-CSRF-TOKEN": getCookie("csrf_access_token"),
         },
     })
+    a.interceptors.response.use(
+        (response) => response,
+        (error) => {
+            if (error.response.status === 401) {
+                router.push({ name: "Login" })
+            }
+
+            return Promise.reject(error);
+        }
+    )
+    return a
 }
 
 function getCookie(name) {

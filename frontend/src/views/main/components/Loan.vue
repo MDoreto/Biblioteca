@@ -53,7 +53,11 @@
         ><v-icon @click="openWhats(item.user.phone)">mdi-whatsapp</v-icon>
       </template>
       <template v-slot:[`item.date_effective`]="{ item }">
-        {{ new Date(item.date_effective).toLocaleDateString("pt-BR") }}
+        {{
+          item.date_effective
+            ? new Date(item.date_effective).toLocaleDateString("pt-BR")
+            : ""
+        }}
       </template>
       <template v-slot:[`item.date_return`]="{ item }">
         {{ new Date(item.date_return).toLocaleDateString("pt-BR") }}
