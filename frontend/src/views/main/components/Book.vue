@@ -128,10 +128,12 @@ export default {
   },
   methods: {
     initialize() {
-      apiService().get("books").then((response) => {
-        this.items = response.data;
-        this.items.forEach((item) => (item.status = this.getStatus(item)));
-      });
+      apiService()
+        .get("books")
+        .then((response) => {
+          this.items = response.data;
+          this.items.forEach((item) => (item.status = this.getStatus(item)));
+        });
     },
     getStatus(item) {
       if (item.copys.some((o) => o.status == "Disponível")) return "Disponível";

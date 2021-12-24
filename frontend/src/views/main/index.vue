@@ -57,8 +57,19 @@
     ><v-app-bar app hide-on-scroll short>
       <span class="titlebar">BIBLIOTECA</span> </v-app-bar
     ><v-main class="teste blue-grey lighten-1">
-      <transition name="fade"> <router-view></router-view></transition> </v-main
-  ></v-app>
+      <transition name="fade"> <router-view></router-view></transition>
+    </v-main>
+    <v-bottom-sheet v-model="auth" inset persistent>
+      <v-sheet class="text-center" height="200px"
+        ><router-link style="text-decoration: none" :to="{ name: 'Login' }">
+          <v-btn class="mt-6" text color="error">
+            close
+          </v-btn></router-link
+        >
+        <div class="my-3">Login vencido, por favor autentique-se novamente</div>
+      </v-sheet>
+    </v-bottom-sheet></v-app
+  >
 </template>
 <style scoped>
 .titlebar {
@@ -92,9 +103,16 @@ export default {
   data: () => ({
     mini: true,
   }),
+  computed: {
+    auth() {
+      return !this.$store.state.auth;
+    },
+  },
   methods: {
     logout() {
-      apiService().post("logout").then(() => this.$router.push({ name: "Login" }));;
+      apiService()
+        .post("logout")
+        .then(() => this.$router.push({ name: "Login" }));
     },
   },
 };

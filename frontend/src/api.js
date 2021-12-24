@@ -1,6 +1,9 @@
 import axios from 'axios';
 import router from './router';
+import store from './store'
+
 function apiService() {
+
     var a = axios.create({
         baseURL: process.env.VUE_APP_ROOT_API,
         withCredentials: true,
@@ -13,7 +16,8 @@ function apiService() {
         (response) => response,
         (error) => {
             if (error.response.status === 401) {
-                router.push({ name: "Login" })
+
+                store.dispatch("logout");
             }
 
             return Promise.reject(error);
