@@ -49,7 +49,7 @@
         >
           mdi-check
         </v-icon>
-        <v-icon>mdi-at</v-icon
+        <v-icon @click="openEmail(item.user.email)">mdi-at</v-icon
         ><v-icon @click="openWhats(item.user.phone)">mdi-whatsapp</v-icon>
       </template>
       <template v-slot:[`item.date_effective`]="{ item }">
@@ -188,6 +188,9 @@ export default {
     },
     openWhats(phone) {
       window.open(`https://api.whatsapp.com/send?phone=${phone}`, "_blank");
+    },
+    openEmail(email) {
+      window.open(`mailto:${email}`, "_blank");
     },
     itemClass(item) {
       if (!item.date_effective) {
