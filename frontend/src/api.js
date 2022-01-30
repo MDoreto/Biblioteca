@@ -1,5 +1,4 @@
 import axios from 'axios';
-import router from './router';
 import store from './store'
 
 function apiService() {
@@ -7,19 +6,17 @@ function apiService() {
     var a = axios.create({
         baseURL: process.env.VUE_APP_ROOT_API,
         withCredentials: true,
-        credentials: "same-origin",
         headers: {
             "X-CSRF-TOKEN": getCookie("csrf_access_token"),
         },
     })
+    a.interceptors.request.use((config) => { store.commit("SET_ISLOADING", true); return config; })
     a.interceptors.response.use(
-        (response) => response,
+        (response) => { store.commit("SET_ISLOADING", false); return response; },
         (error) => {
             if (error.response.status === 401) {
-
                 store.dispatch("logout");
             }
-
             return Promise.reject(error);
         }
     )

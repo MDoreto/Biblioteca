@@ -7,6 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         auth: false,
+        isLoading: false,
     },
     getters: {
         getRole: state => {
@@ -30,13 +31,16 @@ export default new Vuex.Store({
         },
         logout({ commit }) {
             commit('SET_AUTH', false);
-        }
+        },
     },
 
     //to handle mutations
     mutations: {
         SET_AUTH(state, value) {
             state.auth = value
+        },
+        SET_ISLOADING(state, value) {
+            state.isLoading = value
         }
     }
 });

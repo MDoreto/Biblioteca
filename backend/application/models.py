@@ -1,3 +1,4 @@
+from sqlalchemy import false
 from application import app
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -10,44 +11,36 @@ bcrypt = Bcrypt(app)
 
 class Book (db.Model):
     __tablename__ = 'book'
-    id = db.Column(db.String(200), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True,autoincrement=True)
     title = db.Column(db.String(200), nullable=False)
-    substitute = db.Column(db.String(200))
+    subtitle = db.Column(db.String(200))
     author_1 = db.Column(db.String(200))
     author_2 = db.Column(db.String(200))
-    author_3 = db.Column(db.String(200))
     publisher = db.Column(db.String(200))
-    edition = db.Column(db.String(200))
-    volume = db.Column(db.String(200))
-    concentration_area = db.Column(db.String(200))
+    category = db.Column(db.String(200))
     specific_area = db.Column(db.String(200))
     location = db.Column(db.String(200))
     copys = db.relationship("Copy", backref="book")
 
-    def __init__ (self, id,title,substitute='',author_1='',author_2='',author_3='',publisher='',edition='',volume='',concentration_area='',specific_area='',location='',):
-        self.id = id
+    def __init__ (self,title,subtitle='',author_1='',author_2='',publisher='',category='',specific_area='',location=''):
         self.title = title
-        self.substitute = substitute
+        self.subtitle = subtitle
         self.author_1 = author_1
         self.author_2 = author_2
-        self.author_3 = author_3
         self.publisher = publisher
-        self.edition = edition
-        self.volume = volume
-        self.concentration_area = concentration_area
+        self.category = category
         self.specific_area = specific_area
         self.location = location
 
 
 class Copy (db.Model):
     __tablename__ = 'copy'
-    id = db.Column(db.String(200), primary_key=True)
-    book_id = db.Column(db.String(200), db.ForeignKey("book.id"))
+    id = db.Column(db.Integer, primary_key=True,autoincrement=True)
+    book_id = db.Column(db.Integer, db.ForeignKey("book.id"), nullable=False)
     loans = db.relationship("Loan", backref="copy")
     stock= db.Column(db.String(200))
-    def __init__(self,id,book_id):
+    def __init__(self,book_id):
         self.book_id = book_id
-        self.id = id
         self.stock = 'Disponível'
 
 class User (db.Model):
@@ -67,7 +60,7 @@ class Loan (db.Model):
     __tablename__ = 'loan'
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     user_cpf = db.Column(db.String(200), db.ForeignKey("user.cpf"))
-    copy_id = db.Column(db.String(200), db.ForeignKey("copy.id"))
+    copy_id = db.Column(db.Integer, db.ForeignKey("copy.id"))
     date_loan = db.Column(db.DateTime)
     date_return = db.Column(db.DateTime)
     date_effective = db.Column(db.DateTime)

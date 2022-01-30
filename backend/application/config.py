@@ -17,5 +17,6 @@ class Config(object):
 
     JWT_TOKEN_LOCATION= ["cookies"]
 
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=12)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=12)
     JWT_COOKIE_CSRF_PROTECT = True
+    JWT_COOKIE_SECURE = False

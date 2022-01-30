@@ -3,7 +3,8 @@ from .models import *
 from .schemas import *
 from flask import request,jsonify
 from flask_jwt_extended import create_access_token,set_access_cookies,jwt_required,unset_jwt_cookies,get_jwt,get_jwt_identity
-
+from pathlib import Path
+import pandas as pd
 from datetime import datetime,timedelta,timezone
 
 @app.cli.command("seed")
@@ -11,10 +12,23 @@ def seed():
     db.create_all()
     login = Login('master','12345678')
     db.session.add(login)
+    work_path = Path(__file__).parent
+    plan = pd.read_excel((work_path / '../data.xlsx').resolve(),
+                         sheet_name='book', engine='openpyxl')
+    plan.fillna('', inplace=True)
+    for (i,row) in plan.iterrows():    
+        book =  Book.query.filter(Book.title == row['title'], Book.author_1 == row['author_1']).first()
+        if not book:
+            book  = Book(**row)
+            db.session.add(book)
+            db.session.flush()
+        copy = Copy(book.id)
+        db.session.add(copy)
+    print("Data entered successfully")
 
 @app.route("/books")
 def get_books():
-    return jsonify (BookSchema(many = True).dump(Book.query.order_by(Book.title).all()))
+    return jsonify (BookSchema(many = True).dump(Book.query.order_by(Book.id).all()))
 
 @app.route("/books", methods =["POST"])
 @jwt_required()
@@ -107,12 +121,13 @@ def login():
     password = request.json['password']
     if not user or not password:
         return jsonify({'message': 'invalid credentials', 'WWW-Authenticate': 'Basic auth="Login required"'}), 401
-    user = Login.query.get(user)
-    if not user:
+    login = Login.query.get(user)
+    if not login:
         return jsonify({'message': 'user not found', 'data': {}}), 401
-    if user and user.check_password(password):
+    if login and login.check_password(password):
         response = jsonify({"msg": "login successful"})
-        access_token = create_access_token(identity=user.user)
+        access_token = create_access_token(identity=login.user)
+        print(access_token)
         unset_jwt_cookies(response)
         set_access_cookies(response, access_token)
         return response, 201
@@ -120,7 +135,6 @@ def login():
         return jsonify({'message': 'invalid credentials', 'WWW-Authenticate': 'Basic auth="Login required"'}), 401
 
 @app.route('/logout', methods=['POST'])
-@jwt_required()
 def logout():
   response = jsonify()
   unset_jwt_cookies(response)

@@ -190,7 +190,7 @@ export default {
       window.open(`https://api.whatsapp.com/send?phone=${phone}`, "_blank");
     },
     openEmail(email) {
-      window.open(`mailto:${email}`, "_blank");
+      window.open(`mailto:${email}`);
     },
     itemClass(item) {
       if (!item.date_effective) {

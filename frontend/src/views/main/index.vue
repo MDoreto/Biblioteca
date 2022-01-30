@@ -62,14 +62,14 @@
     <v-bottom-sheet v-model="auth" inset persistent>
       <v-sheet class="text-center" height="200px"
         ><router-link style="text-decoration: none" :to="{ name: 'Login' }">
-          <v-btn class="mt-6" text color="error">
-            close
-          </v-btn></router-link
+          <v-btn class="mt-6" text color="error"> close </v-btn></router-link
         >
         <div class="my-3">Login vencido, por favor autentique-se novamente</div>
       </v-sheet>
-    </v-bottom-sheet></v-app
-  >
+    </v-bottom-sheet>
+    <v-dialog v-model="isLoading" max-width="400px" persistent>
+      <v-img src="@/assets/loading.gif" height="400" contain /> </v-dialog
+  ></v-app>
 </template>
 <style scoped>
 .titlebar {
@@ -99,11 +99,13 @@
 import { apiService } from "@/api";
 export default {
   name: "App",
-
   data: () => ({
     mini: true,
   }),
   computed: {
+    isLoading() {
+      return this.$store.state.isLoading;
+    },
     auth() {
       return !this.$store.state.auth;
     },
