@@ -67,11 +67,20 @@
         <div class="my-3">Login vencido, por favor autentique-se novamente</div>
       </v-sheet>
     </v-bottom-sheet>
-    <v-dialog v-model="isLoading" max-width="400px" persistent>
-      <v-img src="@/assets/loading.gif" height="400" contain /> </v-dialog
-  ></v-app>
+    <v-dialog
+      v-model="isLoading"
+      persistent
+      content-class="elevation-0"
+      max-width="400"
+    >
+      <v-img src="@/assets/loading.gif" height="400" contain />
+    </v-dialog>
+  </v-app>
 </template>
 <style scoped>
+.loading {
+  background: transparent !important;
+}
 .titlebar {
   font-family: Helvetica, Arial;
   font-size: 32px;

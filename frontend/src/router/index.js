@@ -10,21 +10,21 @@ const routes = [
     component: () => import('../views/login/Login.vue')
   },
   {
-    path: '/Index',
+    path: '/Home',
     name: 'Index',
     component: () => import('../views/main/index.vue'),
     children: [{
-      path: '/Books',
+      path: '/Livros',
       name: 'Book',
       component: () => import('../views/main/components/Book.vue')
     },
     {
-      path: '/Users',
+      path: '/Usuarios',
       name: 'User',
       component: () => import('../views/main/components/User.vue')
     },
     {
-      path: '/Loans',
+      path: '/Emprestimos',
       name: 'Loan',
       component: () => import('../views/main/components/Loan.vue')
     },]
@@ -37,5 +37,9 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+router.beforeEach((toRoute, fromRoute, next) => {
+  window.document.title = toRoute.meta && toRoute.meta.title ? toRoute.meta.title : 'Biblioteca ' + toRoute.path.replace('/', '- ');
 
+  next();
+})
 export default router

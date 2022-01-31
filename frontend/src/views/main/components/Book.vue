@@ -90,7 +90,7 @@ export default {
       },
       {
         text: "Categoria",
-        value: "concentration_area",
+        value: "category",
       },
       {
         text: "Título",

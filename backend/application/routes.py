@@ -6,6 +6,7 @@ from flask_jwt_extended import create_access_token,set_access_cookies,jwt_requir
 from pathlib import Path
 import pandas as pd
 from datetime import datetime,timedelta,timezone
+import click
 
 @app.cli.command("seed")
 def seed():
@@ -25,6 +26,14 @@ def seed():
         copy = Copy(book.id)
         db.session.add(copy)
     print("Data entered successfully")
+
+@app.cli.command("change-password")
+@click.argument("password")
+def change_password(password):
+    login  = Login.query.get('master')
+    login.set_password(password)
+    db.session.commit()
+    print("Password has been changed")
 
 @app.route("/books")
 def get_books():

@@ -44,7 +44,7 @@ export default {
   data: () => ({
     show: false,
     user: "master",
-    password: "12345678",
+    password: "",
     rules: {
       required: (value) => !!value || "Required.",
       min: (v) => v.length >= 8 || "Min 8 characters",
@@ -60,6 +60,10 @@ export default {
         .then(() => {
           this.$store.dispatch("login");
           this.$router.push({ name: "Index" });
+        })
+        .catch(() => {
+          this.password = "";
+          alert("Senha Inválida")
         });
     },
   },
