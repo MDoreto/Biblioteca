@@ -53,7 +53,7 @@ export default {
     editedItem: {},
     dialog: false,
     header: [
-      { text: "Número", value: "id", primary: true },
+      { text: "Número", value: "id", static: true },
       {
         text: "Estoque",
         value: "stock",

@@ -86,7 +86,7 @@ export default {
       {
         text: "ID",
         value: "id",
-        primary: true,
+        static: true,
       },
       {
         text: "Categoria",

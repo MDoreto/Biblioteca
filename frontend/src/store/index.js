@@ -9,11 +9,6 @@ export default new Vuex.Store({
         auth: false,
         isLoading: false,
     },
-    getters: {
-        getRole: state => {
-            return state.role;
-        },
-    },
     plugins: [
         createPersistedState({
             paths: ['auth'],

@@ -52,6 +52,12 @@
                   :label="h.text"
                   required
                 ></v-text-field>
+                <v-combobox
+                  v-else-if="h.value == 'category'"
+                  v-model="item[h.value]"
+                  :items="categorys"
+                  :label="h.text"
+                ></v-combobox>
                 <v-text-field
                   v-else
                   :label="h.text"
@@ -93,6 +99,7 @@ export default {
       (v) => !!v || "E-mail is required",
       (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
     ],
+    categorys: [],
   }),
   computed: {
     formTitle() {
@@ -100,6 +107,14 @@ export default {
     },
   },
   methods: {
+    getCategorys() {
+      apiService()
+        .get("categorys")
+        .then((response) => {
+          console.log(response);
+          this.categorys = response.data;
+        });
+    },
     close() {
       this.$emit("update:dialog", false);
     },
@@ -115,6 +130,9 @@ export default {
       this.close();
       this.$emit("save");
     },
+  },
+  created() {
+    this.getCategorys();
   },
 };
 </script>

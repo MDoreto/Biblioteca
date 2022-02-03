@@ -39,6 +39,10 @@ def change_password(password):
 def get_books():
     return jsonify (BookSchema(many = True).dump(Book.query.order_by(Book.id).all()))
 
+@app.route("/categorys")
+def get_categorys():
+    return jsonify (list({book.category for book in Book.query.all()}))
+
 @app.route("/books", methods =["POST"])
 @jwt_required()
 def post_books():

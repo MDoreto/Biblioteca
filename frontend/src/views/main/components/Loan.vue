@@ -194,17 +194,10 @@ export default {
     },
     itemClass(item) {
       if (!item.date_effective) {
-        if (
-          new Date().toLocaleDateString("pt-BR") ==
-          new Date(item.date_return).toLocaleDateString("pt-BR")
-        )
-          return "orange lighten-4";
+        if (new Date() == new Date(item.date_return)) return "orange lighten-4";
         if (new Date() > new Date(item.date_return)) return "red lighten-4";
       } else {
-        if (
-          new Date(item.date_return).toLocaleDateString("pt-BR") >=
-          new Date(item.date_effective).toLocaleDateString("pt-BR")
-        )
+        if (new Date(item.date_return) >= new Date(item.date_effective))
           return "green lighten-4";
         else return "red lighten-4";
       }
